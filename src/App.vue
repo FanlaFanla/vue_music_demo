@@ -11,10 +11,10 @@ import index from './components/02.index.vue';
 export default {
   name: 'app',
   components: {
-    top,
-    index
+    top,// top: top
+    index// index: index
   }
-};
+}
 </script>
 
 <style >

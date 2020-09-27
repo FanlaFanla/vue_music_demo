@@ -1,11 +1,11 @@
 <template>
   <div class="songs-container">
     <div class="tab-bar">
-      <span class="item active">全部</span>
-      <span class="item">华语</span>
-      <span class="item">欧美</span>
-      <span class="item">日本</span>
-      <span class="item">韩国</span>
+      <span class="item" :class="{active:tag==0}" @click="tag=0">全部</span>
+      <span class="item" :class="{active:tag==7}" @click="tag=7">华语</span>
+      <span class="item" :class="{active:tag==96}" @click="tag=96">欧美</span>
+      <span class="item" :class="{active:tag==8}" @click="tag=8">日本</span>
+      <span class="item" :class="{active:tag==16}" @click="tag=16">韩国</span>
     </div>
     <!-- 底部的table -->
     <table class="el-table playlit-table">
@@ -18,46 +18,27 @@
         <th>时长</th>
       </thead>
       <tbody>
-        <tr class="el-table__row">
-          <td>1</td>
+        <tr class="el-table__row" v-for="(item, index) in songsList" :key="index">
+          <td>{{index+1}}</td>
           <td>
             <div class="img-wrap">
-              <img src="../assets/songCover.jpg" alt="" />
-              <span class="iconfont icon-play"></span>
+              <img :src="item.album.picUrl" alt="" />
+              <!-- 播放按钮 -->
+              <span @click="playMusic(item.id)" class="iconfont icon-play">▶</span>
             </div>
           </td>
           <td>
             <div class="song-wrap">
               <div class="name-wrap">
-                <span>你要相信这不是最后一天</span>
-                <span class="iconfont icon-mv"></span>
+                <span>{{item.name}}</span>
+                <span class="iconfont icon-mv"  v-if="item.mvid != 0" @click="toMv(item.mvid)">mv</span>
               </div>
-              <span>电视剧加油练习生插曲</span>
+              <span></span>
             </div>
           </td>
-          <td>华晨宇</td>
-          <td>你要相信这不是最后一天</td>
-          <td>06:03</td>
-        </tr>
-        <tr class="el-table__row">
-          <td>2</td>
-          <td>
-            <div class="img-wrap">
-              <img src="../assets/songCover.jpg" alt="" />
-              <span class="iconfont icon-play"></span>
-            </div>
-          </td>
-          <td>
-            <div class="song-wrap">
-              <div class="name-wrap">
-                <span>你要相信这不是最后一天</span>
-                <span class="iconfont icon-mv"></span>
-              </div>
-            </div>
-          </td>
-          <td>华晨宇</td>
-          <td>你要相信这不是最后一天</td>
-          <td>06:03</td>
+          <td>{{item.album.artists[0].name}}</td>
+          <td>{{item.album.name}}</td>
+          <td>{{item.duration}}</td>
         </tr>
       </tbody>
     </table>
@@ -65,14 +46,75 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   name: 'songs',
   data() {
     return {
- 
-    };
+      // 歌曲列表
+      songsList: [],
+      // 分类
+      tag: 0
+    }
+  },
+  watch: {
+    tag() {
+      this.getList()
+    }
+  },
+  created() {
+    this.getList()
+  },
+  methods: {
+    // 获取列表数据
+    getList() {
+      axios({
+      url: 'https://autumnfish.cn/top/song',
+      method: 'get',
+      params: {
+        // 传递设置的数据
+        type: this.tag
+      }
+    }).then(res => {
+      // console.log(res.data.data)
+      this.songsList = res.data.data
+      // 处理时长，把毫秒转为 时：分：秒
+      for(let i=0; i<this.songsList.length; i++) {
+        // 获取 歌曲毫秒数
+        let duration = this.songsList[i].duration
+        // 假定有  320000毫秒
+        // 秒 320000/1000 = 320 秒
+        // 分 320/60 
+        // 秒 320%60
+        let min = parseInt(duration/1000/60)
+        min = min < 10 ? min = '0' + min : min
+        let sec = parseInt(duration/1000%60)
+        sec = sec < 10 ? sec = '0' + sec : sec
+        // 应用格式化后的时间展示形式
+        this.songsList[i].duration =  min + ':' + sec
+      }
+    })
+    },
+    // 点击播放音乐
+    playMusic(id) {
+      axios({
+        url: 'https://autumnfish.cn/song/url',
+        methos: 'get',
+        params: {
+          id// id:id
+        }
+      }).then(res => {
+        // 给传递播放地址给父组件
+        this.$parent.musicUrl = res.data.data[0].url
+      })
+    },
+
+    // 跳转到 mv 页面
+    toMv(id) {
+      this.$router.push(`/mv?id=${id}`)
+    }
   }
-};
+}
 </script>
 
 <style >

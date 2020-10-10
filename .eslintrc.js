@@ -5,11 +5,6 @@ module.exports = {
     node: true
   },
 
-  extends: [
-    'plugin:vue/essential',
-    '@vue/standard'
-  ],
-
   parserOptions: {
     parser: 'babel-eslint'
   },
@@ -20,8 +15,8 @@ module.exports = {
     indent: 'off'
   },
 
-  'extends': [
-    'plugin:vue/essential',
+  extends: [
+    'plugin:vue/recommended',
     '@vue/standard'
   ]
 }

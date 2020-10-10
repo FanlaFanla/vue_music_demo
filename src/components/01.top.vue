@@ -1,29 +1,35 @@
 <template>
   <div class="top-container">
     <div class="left-box">
-      <div class="icon-wrapper">
+      <!-- <div class="icon-wrapper">
         <span class="iconfont icon-home" @click="toHome">♖</span>
         <span class="iconfont icon-sami-select">-</span>
         <span class="iconfont icon-full-screen">□</span>
-      </div>
+      </div> -->
       <div class="history-wrapper">
-        <span class="iconfont icon-arrow-lift"></span>
-        <span class="iconfont icon-arrow-right"></span>
+        <span
+          class="iconfont icon-arrow-lift"
+          @click="goBack"
+        >◁</span>
+        <span
+          class="iconfont icon-arrow-right"
+          @click="goAhead"
+        >▷</span>
       </div>
     </div>
     <div class="right-box">
       <div class="el-input el-input--small el-input--prefix">
         <!-- 搜索框 -->
         <input
+          v-model="inputValue"
           type="text"
           autocomplete="off"
           placeholder="搜索"
           class="el-input__inner"
-          v-model="inputValue"
           @keyup.enter="toResult"
-        />
+        >
         <span class="el-input__prefix">
-          <i class="el-input__icon el-icon-search"></i>
+          <i class="el-input__icon el-icon-search" />
         </span>
       </div>
     </div>
@@ -32,30 +38,47 @@
 
 <script>
   export default {
-    name: 'top',
-    data() {
+    name: 'Top',
+    data () {
       return {
         // 搜索框输入内容
         inputValue: ''
       }
     },
     methods: {
-      toResult() {
+      toResult () {
         // 非空判断
-        if(this.inputValue == '') {
+        if (this.inputValue === '') {
           // 提示用户
           this.$message.warning('请输入内容！')
-        }else{
+        } else {
           // 去搜索页
           this.$router.push('/result?q=' + this.inputValue)
           this.$router.go(0)
         }
       },
-      toHome() {
+      toHome () {
         this.$router.push('/discovery')
+      },
+      // 返回上一页面
+      goBack () {
+        this.$router.go(-1)
+      },
+      // 前往下一页面
+      goAhead () {
+        this.$router.go(1)
       }
     }
   }
 </script>
 
-<style scoped></style>
+<style scoped>
+.history-wrapper {
+  position: relative;
+  left: 15px !important
+}
+.history-wrapper .iconfont {
+  font-size: 25px !important
+}
+
+</style>

@@ -5,15 +5,12 @@ import App from './App.vue'
 import ElementUI from 'element-ui'
 // 导入 Element-ui 样式
 import 'element-ui/lib/theme-chalk/index.css'
-// 插件 Element-ui
-Vue.use(ElementUI)
 
 // 导入全局初始化样式
 import './assets/index.css'
 
 // 路由整合
 import VueRouter from 'vue-router'
-Vue.use(VueRouter)
 
 // 导入对应的路由
 import discovery from './views/01.discovery.vue'
@@ -23,6 +20,9 @@ import mvs from './views/04.mvs.vue'
 import result from './views/05.result.vue'
 import playlist from './views/06.playlist.vue'
 import mv from './views/07.mv.vue'
+// 插件 Element-ui
+Vue.use(ElementUI)
+Vue.use(VueRouter)
 
 const router = new VueRouter({
   routes: [
